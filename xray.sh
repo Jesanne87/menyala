@@ -1,0 +1,360 @@
+#!/bin/bash
+GitUser="Jesanne87"
+rm -rf xray.sh
+clear
+NC='\e[0m'
+DEFBOLD='\e[39;1m'
+RB='\e[31;1m'
+GB='\e[32;1m'
+YB='\e[33;1m'
+BB='\e[34;1m'
+MB='\e[35;1m'
+CB='\e[35;1m'
+WB='\e[37;1m'
+export Server_URL="msi8888"
+# Check Register IP
+MYIP=$(wget -qO- icanhazip.com/ip);
+clear
+echo "Checking VPS"
+sleep 1
+IZIN=$( curl https://raw.githubusercontent.com/msi8888/allow/main/access2 | grep "$MYIP" )
+if [ "$MYIP" = "$IZIN" ]; then
+clear
+echo -e "${NC}${GB}Permission Accepted...${NC}"
+sleep 2
+else
+clear
+echo -e "${NC}${RB}Permission Denied!${NC}";
+echo -e "Please Contact ${GB}Admin${NC}"
+echo -e "Telegram :t.me/JsPhantom"
+exit 1
+fi
+clear
+secs_to_human() {
+echo -e "${WB}Installation time : $(( ${1} / 3600 )) hours $(( (${1} / 60) % 60 )) minute's $(( ${1} % 60 )) seconds${NC}"
+}
+start=$(date +%s)
+apt update -y
+apt install socat netfilter-persistent bsdmainutils -y
+apt install vnstat lsof fail2ban -y
+apt install curl sudo cron -y
+apt install build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev openssl libssl-dev gcc clang llvm g++ valgrind make cmake debian-keyring debian-archive-keyring apt-transport-https systemd -y
+apt install zip -y
+apt install unzip -y
+apt install htop
+mkdir /backup >> /dev/null 2>&1
+mkdir /user >> /dev/null 2>&1
+mkdir /tmp >> /dev/null 2>&1
+apt install resolvconf network-manager dnsutils bind9 -y
+cat > /etc/systemd/resolved.conf << END
+[Resolve]
+DNS=8.8.8.8 8.8.4.4
+Domains=~.
+ReadEtcHosts=yes
+END
+
+systemctl enable resolvconf
+systemctl enable systemd-resolved
+systemctl enable NetworkManager
+rm -rf /etc/resolv.conf
+rm -rf /etc/resolvconf/resolv.conf.d/head
+echo "
+nameserver 127.0.0.53
+" >> /etc/resolv.conf
+echo "
+" >> /etc/resolvconf/resolv.conf.d/head
+systemctl restart resolvconf
+systemctl restart systemd-resolved
+systemctl restart NetworkManager
+echo "Google DNS" > /user/current
+rm /usr/local/etc/xray/city >> /dev/null 2>&1
+rm /usr/local/etc/xray/org >> /dev/null 2>&1
+rm /usr/local/etc/xray/timezone >> /dev/null 2>&1
+rm /usr/local/etc/xray/region >> /dev/null 2>&1
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" - install --beta
+curl -s ipinfo.io/city >> /usr/local/etc/xray/city
+curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /usr/local/etc/xray/org
+curl -s ipinfo.io/timezone >> /usr/local/etc/xray/timezone
+curl -s ipinfo.io/region >> /usr/local/etc/xray/region
+echo -e "${GB}[ INFO ]${NC} ${YB}Downloading Xray-core mod${NC}"
+sleep 0.5
+curl -sL "https://github.com/mssvpn/Xray-core/releases/download/v1.7.2.1/Xray-linux-64.zip" -o xray.zip
+unzip -q xray.zip
+rm -rf xray.zip
+rm -rf geoip.dat
+rm -rf geosite.dat
+rm -rf LICENSE
+rm -rf README.md
+mv xray /backup/xray.mod.backup
+#wget -q -O /backup/xray.mod.backup "https://github.com/dharak36/Xray-core/releases/download/v1.0.0/xray.linux.64bit"
+echo -e "${GB}[ INFO ]${NC} ${YB}Download Xray-core done${NC}"
+sleep 1
+cd
+clear
+curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
+sudo apt-get install speedtest
+clear
+ln -fs /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime
+timedatectl set-timezone Asia/Kuala_Lumpur
+code=$(grep DISTRIB_CODENAME /etc/lsb-release | cut -d '=' -f 2)
+cat > /etc/apt/sources.list.d/nginx.list << END
+deb http://nginx.org/packages/ubuntu/ $code nginx
+deb-src http://nginx.org/packages/ubuntu/ $code nginx
+END
+wget http://nginx.org/keys/nginx_signing.key
+sudo apt-key add nginx_signing.key
+apt update
+apt install nginx -y
+rm /var/www/html/*.html >> /dev/null 2>&1
+rm /etc/nginx/sites-enabled/default >> /dev/null 2>&1
+rm /etc/nginx/sites-available/default >> /dev/null 2>&1
+mkdir -p /var/www/html/allxray
+systemctl restart nginx
+clear
+touch /usr/local/etc/xray/domain
+echo -e "${YB}Input Domain${NC} "
+echo " "
+read -rp "Input domain kamu : " -e dns
+if [ -z $dns ]; then
+echo -e "Nothing input for domain!"
+else
+echo "$dns" > /usr/local/etc/xray/domain
+echo "DNS=$dns" > /var/lib/dnsvps.conf
+fi
+clear
+systemctl stop nginx
+systemctl stop xray
+domain=$(cat /usr/local/etc/xray/domain)
+curl https://get.acme.sh | sh
+source ~/.bashrc
+bash .acme.sh/acme.sh  --register-account  -m $(echo $RANDOM | md5sum | head -c 6; echo;)@gmail.com --server zerossl
+bash .acme.sh/acme.sh --issue -d $domain --server zerossl --keylength ec-256 --fullchain-file /usr/local/etc/xray/fullchain.cer --key-file /usr/local/etc/xray/private.key --standalone --force
+chmod 745 /usr/local/etc/xray/private.key
+clear
+echo -e "${GB}[ INFO ]${NC} ${YB}Setup Nginx & Xray Conf${NC}"
+uuid=$(cat /proc/sys/kernel/random/uuid)
+pwtr=$(openssl rand -hex 4)
+pwss=$(echo $RANDOM | md5sum | head -c 6; echo;)
+userpsk=$(openssl rand -base64 32)
+serverpsk=$(openssl rand -base64 32)
+echo "$serverpsk" > /usr/local/etc/xray/serverpsk
+wget -q -O /usr/local/etc/xray/config.json https://raw.githubusercontent.com/msi8888/hehe/main/configulti.json
+cat > /etc/nginx/nginx.conf << END
+# Generated by nginxconfig.io
+user www-data;
+pid /run/nginx.pid;
+worker_processes auto;
+worker_rlimit_nofile 65535;
+
+events {
+   multi_accept on;
+   worker_connections 65535;
+}
+
+http {
+   charset utf-8;
+   sendfile on;
+   tcp_nopush on;
+   tcp_nodelay on;
+   server_tokens off;
+   types_hash_max_size 2048;
+   server_names_hash_bucket_size 128;
+   server_names_hash_max_size 512;
+   client_max_body_size 16M;
+
+   # logging
+   access_log /var/log/nginx/access.log;
+   error_log /var/log/nginx/error.log warn;
+
+   # Compression
+   gzip on;
+   gzip_comp_level 5;
+   gzip_min_length 256;
+   gzip_proxied any;
+   gzip_types application/javascript application/json application/xml text/css text/plain text/xml application/xml+rss application/grpc+proto;
+
+   include /etc/nginx/conf.d/*.conf;
+   include /etc/nginx/sites-enabled/*;
+
+   upstream vless_grpc {
+       server 127.0.0.1:5000;
+   }
+   upstream vmess_grpc {
+       server 127.0.0.1:5100;
+   }
+   upstream trojan_grpc {
+       server 127.0.0.1:5200;
+   }
+   upstream ss_grpc {
+       server 127.0.0.1:5300;
+   }
+   upstream ss22_grpc {
+       server 127.0.0.1:5400;
+   }
+   server {
+       listen 8443 http2 proxy_protocol;
+       set_real_ip_from 127.0.0.1;
+       real_ip_header proxy_protocol;
+       root /var/www/html;
+       index index.html index.htm;
+   }
+   server {
+       listen 8080 proxy_protocol default_server;
+       listen 8443 http2 proxy_protocol default_server;
+       set_real_ip_from 127.0.0.1;
+       real_ip_header proxy_protocol;
+       server_name $domain;
+
+       location / {
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+          root /var/www/html;
+       }
+
+       location /vless-grpc {
+          grpc_pass grpc://vless_grpc;
+       }
+       location /vmess-grpc {
+          grpc_pass grpc://vmess_grpc;
+       }
+       location /trojan-grpc {
+          grpc_pass grpc://trojan_grpc;
+       }
+       location /ss-grpc {
+          grpc_pass grpc://ss_grpc;
+       }
+       location /ss22-grpc {
+          grpc_pass grpc://ss22_grpc;
+       }
+   }
+}
+END
+wget -q -O /var/www/html/index.html https://raw.githubusercontent.com/${GitUser}/menyala/main/index.html
+systemctl restart nginx
+systemctl restart xray
+echo -e "${GB}[ INFO ]${NC} ${YB}Setup Done${NC}"
+sleep 1
+clear
+# Blokir lalu lintas torrent (BitTorrent)
+sudo iptables -A INPUT -p udp --dport 6881:6889 -j DROP
+sudo iptables -A INPUT -p tcp --dport 6881:6889 -j DROP
+# Blokir lalu lintas torrent dengan modul string
+sudo iptables -A INPUT -p tcp --dport 6881:6889 -m string --algo bm --string "BitTorrent" -j DROP
+sudo iptables -A INPUT -p udp --dport 6881:6889 -m string --algo bm --string "BitTorrent" -j DROP
+cd /usr/bin
+echo -e "${GB}[ INFO ]${NC} ${YB}Downloading Main Menu${NC}"
+wget -q -O menu "https://raw.githubusercontent.com/${GitUser}/menyala/main/menu/menu.sh"
+wget -q -O allxray "https://raw.githubusercontent.com/${GitUser}/menyala/main/menu/allxray.sh"
+wget -q -O traffic "https://raw.githubusercontent.com/${GitUser}/menyala/main/menu/traffic.sh"
+wget -q -O warp-menu "https://raw.githubusercontent.com/${GitUser}/menyala/main/menu/warp-menu.sh"
+wget -q -O tweak-menu "https://raw.githubusercontent.com/${GitUser}/menyala/main/menu/tweak-menu.sh"
+sleep 0.5
+
+echo -e "${GB}[ INFO ]${NC} ${YB}Downloading Menu All Xray${NC}"
+wget -q -O add-xray "https://raw.githubusercontent.com/${GitUser}/menyala/main/allxray/add-xray.sh"
+wget -q -O del-xray "https://raw.githubusercontent.com/${GitUser}/menyala/main/allxray/del-xray.sh"
+wget -q -O extend-xray "https://raw.githubusercontent.com/${GitUser}/menyala/main/allxray/extend-xray.sh"
+wget -q -O trialxray "https://raw.githubusercontent.com/${GitUser}/menyala/main/allxray/trialxray.sh"
+wget -q -O cek-xray "https://raw.githubusercontent.com/${GitUser}/menyala/main/allxray/cek-xray.sh"
+echo -e "${GB}[ INFO ]${NC} ${YB}Downloading Other Menu${NC}"
+wget -q -O xp "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/xp.sh"
+wget -q -O dns "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/dns.sh"
+wget -q -O certxray "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/certxray.sh"
+wget -q -O about "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/about.sh"
+wget -q -O clear-log "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/clear-log.sh"
+wget -q -O log-xray "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/log-xray.sh"
+wget -q -O xraymod "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/xraymod.sh"
+wget -q -O xrayofficial "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/xrayofficial.sh"
+wget -q -O changer "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/changer.sh"
+wget -q -O nf "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/nf.sh"
+wget -q -O backup "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/backup.sh"
+wget -q -O restore "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/restore.sh"
+wget -q -O autobackup "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/autobackup.sh"
+wget -q -O runbackup "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/runbackup.sh"
+wget -q -O dnsstatus "https://raw.githubusercontent.com/${GitUser}/menyala/main/other/dnsstatus.sh"
+echo -e "${GB}[ INFO ]${NC} ${YB}Download All Menu Done${NC}"
+sleep 2
+chmod +x menu
+chmod +x allxray
+chmod +x traffic
+chmod +x warp-menu
+chmod +x tweak-menu
+chmod +x add-xray
+chmod +x del-xray
+chmod +x extend-xray
+chmod +x trialxray
+chmod +x cek-xray
+chmod +x xp
+chmod +x dns
+chmod +x certxray
+chmod +x about
+chmod +x clear-log
+chmod +x log-xray
+chmod +x xraymod
+chmod +x xrayofficial
+chmod +x changer
+chmod +x nf
+chmod +x backup
+chmod +x restore
+chmod +x autobackup
+chmod +x runbackup
+chmod +x dnsstatus
+cd
+echo "0 4 * * * root reboot" >> /etc/crontab
+echo "0 0 * * * root xp" >> /etc/crontab
+echo "*/3 * * * * root clear-log" >> /etc/crontab
+systemctl restart cron
+cat > /root/.profile << END
+if [ "/usr/bin/bash" ]; then
+if [ -f ~/.bashrc ]; then
+. ~/.bashrc
+fi
+fi
+mesg n || true
+clear
+menu
+END
+# Version
+serverV=$( curl -sS https://raw.githubusercontent.com/Jesanne87/menyala/main/version_check)
+echo "$serverV" > /home/ver
+# Update your DNS rental/controld expired date after install
+echo "500828" > /home/exp
+chmod 644 /root/.profile
+clear
+echo ""
+echo -e "${BB}—————————————————————————————————————————————————————————${NC}"
+echo -e "             ${WB}XRAY SCRIPT MODED BY JsPhantom${NC}"
+echo -e "${BB}—————————————————————————————————————————————————————————${NC}"
+echo -e "                 ${WB}»»» Protocol Service «««${NC}  "
+echo -e "${BB}—————————————————————————————————————————————————————————${NC}"
+echo -e "${YB}Vmess Websocket${NC}     : ${YB}443 & 80${NC}"
+echo -e "${YB}Vmess HTTPupgrade${NC}   : ${YB}443 & 80${NC}"
+echo -e "${YB}Vmess gRPC${NC}          : ${YB}443${NC}"
+echo ""
+echo -e "${YB}Vless XTLS-Vision${NC}   : ${YB}443${NC}"
+echo -e "${YB}Vless Websocket${NC}     : ${YB}443 & 80${NC}"
+echo -e "${YB}Vless HTTPupgrade${NC}   : ${YB}443 & 80${NC}"
+echo -e "${YB}Vless gRPC${NC}          : ${YB}443${NC}"
+echo ""
+echo -e "${YB}Trojan TCP TLS${NC}      : ${YB}443${NC}"
+echo -e "${YB}Trojan Websocket${NC}    : ${YB}443 & 80${NC}"
+echo -e "${YB}Trojan HTTPupgrade${NC}  : ${YB}443 & 80${NC}"
+echo -e "${YB}Trojan gRPC${NC}         : ${YB}443${NC}"
+echo ""
+echo -e "${YB}SS Websocket${NC}        : ${YB}443 & 80${NC}"
+echo -e "${YB}SS HTTPupgrade${NC}      : ${YB}443 & 80${NC}"
+echo -e "${YB}SS gRPC${NC}             : ${YB}443${NC}"
+echo ""
+echo -e "${YB}SS 2022 Websocket${NC}   : ${YB}443 & 80${NC}"
+echo -e "${YB}SS 2022 HTTPupgrade${NC} : ${YB}443 & 80${NC}"
+echo -e "${YB}SS 2022 gRPC${NC}        : ${YB}443${NC}"
+echo -e "${BB}————————————————————————————————————————————————————————${NC}"
+echo ""
+rm -f xray
+secs_to_human "$(($(date +%s) - ${start}))"
+echo -e "${YB}[ WARNING ] reboot now ? (Y/N)${NC} "
+read answer
+if [ "$answer" == "${answer#[Yy]}" ] ;then
+exit 0
+else
+reboot
+fi
