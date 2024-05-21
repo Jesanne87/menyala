@@ -1,187 +1,41 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Informasi IP</title>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #454545;
-    color: #ffffff;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 85vh;
-    padding: 35px;
-    box-sizing: border-box;
-    overflow: hidden;
-  }
+    <title>Njirrr</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://raw.githubusercontent.com/Jesanne87/menyala/main/njir.jpeg') no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            overflow: hidden;
+        }
 
-  .stars, .twinkling, .clouds {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+        h1 {
+            position: relative;
+            font-size: 4em;
+            color: #FFF;
+            text-align: center;
+            animation: splash 5s infinite;
+        }
 
-  .stars {
-    background: #000 url('https://www.script-tutorials.com/demos/360/images/stars.png') repeat top center;
-    z-index: 0;
-  }
-
-  .twinkling {
-    background: transparent url('https://www.script-tutorials.com/demos/360/images/twinkling.png') repeat top center;
-    z-index: 1;
-    animation: move-twink-back 200s linear infinite;
-  }
-
-  @keyframes move-twink-back {
-    from { background-position: 0 0; }
-    to { background-position: -10000px 5000px; }
-  }
-
-  .info-container {
-    background-color: rgba(51, 51, 51, 0.5); /* Warna latar belakang dengan opacity 0.9 */
-    border-radius: 18px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    width: 100%;
-    max-width: 960px;
-    box-sizing: border-box;
-    z-index: 2;
-  }
-  
-  .info {
-    font-size: 50px;
-    color: rgba(255, 255, 255, 1); /* Warna teks tanpa transparansi */
-    border-bottom: 2px solid rgba(17, 253, 255, 1); /* Contoh warna border tanpa transparansi */
-    padding: 30px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .info:last-child {
-    border-bottom: none;
-  }
-  
-  .info-title {
-    font-weight: bold;
-    margin-right: 10px;
-  }
-  
-  .loading-text {
-    color: #2fff3b;
-  }
-  
-  .error-text {
-    color: #ff2424;
-  }
-  
-  #country-flag {
-    margin-right: 12px;
-    width: 40px;
-    height: 31px;
-  }
-  
-  .spinner {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 2s linear infinite;
-    display: inline-block;
-    vertical-align: middle;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .copyright {
-    font-size: 30px;
-    margin-top: 70px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    color: #ffffff;
-  }
-  
-  .copyright2 {
-    font-size: 30px;
-    margin-top: 15px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    color: #ffffff;
-  }
-</style>
+        @keyframes splash {
+            0% { color: rgb(255, 0, 0); text-shadow: 0 0 5px rgb(255, 0, 0), 0 0 10px rgb(255, 0, 0), 0 0 15px rgb(255, 0, 0), 0 0 20px rgb(255, 0, 0); }
+            20% { color: rgb(255, 165, 0); text-shadow: 0 0 5px rgb(255, 165, 0), 0 0 10px rgb(255, 165, 0), 0 0 15px rgb(255, 165, 0), 0 0 20px rgb(255, 165, 0); }
+            40% { color: rgb(255, 255, 0); text-shadow: 0 0 5px rgb(255, 255, 0), 0 0 10px rgb(255, 255, 0), 0 0 15px rgb(255, 255, 0), 0 0 20px rgb(255, 255, 0); }
+            60% { color: rgb(0, 128, 0); text-shadow: 0 0 5px rgb(0, 128, 0), 0 0 10px rgb(0, 128, 0), 0 0 15px rgb(0, 128, 0), 0 0 20px rgb(0, 128, 0); }
+            80% { color: rgb(0, 0, 255); text-shadow: 0 0 5px rgb(0, 0, 255), 0 0 10px rgb(0, 0, 255), 0 0 15px rgb(0, 0, 255), 0 0 20px rgb(0, 0, 255); }
+            100% { color: rgb(75, 0, 130); text-shadow: 0 0 5px rgb(75, 0, 130), 0 0 10px rgb(75, 0, 130), 0 0 15px rgb(75, 0, 130), 0 0 20px rgb(75, 0, 130); }
+        }
+    </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="twinkling"></div>
-
-<div class="info-container">
-  <div class="info"><span class="info-title">IPv4 Address:</span> <span class="loading-text"><div class="spinner"></div></span></div>
-  <div class="info"><span class="info-title">ISP:</span> <span class="loading-text"><div class="spinner"></div></span></div>
-  <div class="info"><span class="info-title">City:</span> <span class="loading-text"><div class="spinner"></div></span></div>
-  <div class="info"><span class="info-title">Region:</span> <span class="loading-text"><div class="spinner"></div></span></div>
-  <div class="info" id="country-container"><span class="info-title">Country:</span> <div style="display: flex; align-items: center;"><img id="country-flag" src="" alt="Flag" style="display:none;"/><span class="loading-text"><div class="spinner"></div></span></div></div>
-  <div class="copyright">Dibuat Penuh Oleh ChatGPT & Copilot</div>
-  <div class="copyright2">2024 © Dugong Lewat</div>
-</div>
- 
-<script>
-  const ipToken = 'b9434e9993eb72';
-
-  function updateInfo(selector, text) {
-    document.querySelector(selector).textContent = text;
-  }
-
-  function displayError(selector) {
-    const element = document.querySelector(selector);
-    element.textContent = 'Informasi tidak tersedia';
-    element.classList.add('error-text');
-    if (element.parentNode.querySelector('.spinner')) {
-      element.parentNode.querySelector('.spinner').style.display = 'none';
-    }
-  }
-
-  fetch('https://api.ipify.org?format=json')
-    .then(response => response.json())
-    .then(data => {
-      updateInfo('.info-container .info:nth-child(1) .loading-text', data.ip);
-      return fetch(`https://ipinfo.io/${data.ip}/json?token=${ipToken}`);
-    })
-    .then(response => response.json())
-    .then(ipData => {
-      const ispText = ipData.org.replace(/AS[0-9]+ /, '');
-      updateInfo('.info-container .info:nth-child(2) .loading-text', ispText);
-      updateInfo('.info-container .info:nth-child(3) .loading-text', ipData.city);
-      updateInfo('.info-container .info:nth-child(4) .loading-text', ipData.region);
-      updateInfo('.info-container .info:nth-child(5) .loading-text', ipData.country);
-      const countryCode = ipData.country.toLowerCase();
-      const flagImage = document.getElementById('country-flag');
-      flagImage.src = `https://flagcdn.com/256x192/${countryCode}.png`;
-      flagImage.style.display = 'inline';
-      flagImage.alt = `Flag of ${ipData.country}`;
-      document.querySelectorAll('.spinner').forEach((spinner) => {
-        spinner.style.display = 'none';
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      displayError('.info-container .info:nth-child(1) .loading-text');
-      displayError('.info-container .info:nth-child(2) .loading-text');
-      displayError('.info-container .info:nth-child(3) .loading-text');
-      displayError('.info-container .info:nth-child(4) .loading-text');
-      displayError('.info-container .info:nth-child(5) .loading-text');
-    });
-</script>
+    <h1>Cuba Ngor Ngor dlu..</h1>
 </body>
 </html>
