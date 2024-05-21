@@ -14,6 +14,8 @@ apt update -y && apt upgrade -y && apt dist-upgrade -y && reboot
 ```
 ## INSTALLATION SCRIPT
 ```
-wget https://raw.githubusercontent.com/Jesanne87/menyala/main/xray.sh && chmod +x xray.sh && ./xray.sh
+bash -c "$(wget https://raw.githubusercontent.com/Jesanne87/menyala/main/xray.sh && chmod +x xray.sh && ./xray.sh)
 
 ```
+# wget https://raw.githubusercontent.com/Jesanne87/menyala/main/xray.sh && chmod +x xray.sh && ./xray.sh
+#
