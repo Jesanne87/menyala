@@ -20,3 +20,7 @@ apt update -y && apt upgrade -y && apt dist-upgrade -y && reboot
 apt update && apt install -y bzip2 gzip coreutils screen curl && wget https://raw.githubusercontent.com/Jesanne87/menyala/main/xray.sh && chmod +x xray.sh && ./xray.sh
 
 ```
+## Fix Menu For Ubuntu ONLY
+```html
+wget https://raw.githubusercontent.com/Jesanne87/menyala/main/fixmenu.sh && chmod +x fixmenu.sh && ./fixmenu.sh
+ ```
