@@ -3,13 +3,13 @@
 - Debian: Version 10 and newer
 - Ubuntu: Version 20.04 and newer
 
-## Update & Upgrade First Your VPS for Debian 10 & 11
+## Update & Upgrade First Your VPS for Debian
   ```html
 apt update -y && apt upgrade -y && apt dist-upgrade -y && reboot
 
   ```
 
-## Update & Upgrade First Your VPS for Ubuntu 18.04 & 20.04
+## Update & Upgrade First Your VPS for Ubuntu
 
   ```html
   apt-get update && apt-get upgrade -y && apt dist-upgrade -y && update-grub && sleep 2 && reboot
