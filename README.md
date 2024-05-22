@@ -1,5 +1,8 @@
-# Beta Version
-## Update & Upgrade First Your VPS for Debian 10 & 11
+## Supported Operating Systems
+
+- Debian: Version 10 and newer
+- Ubuntu: Version 20.04 and newer
+
 
   ```html
 apt update -y && apt upgrade -y && apt dist-upgrade -y && reboot
