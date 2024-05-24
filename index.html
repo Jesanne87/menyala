@@ -32,10 +32,87 @@
             60% { color: rgb(0, 128, 0); text-shadow: 0 0 5px rgb(0, 128, 0), 0 0 10px rgb(0, 128, 0), 0 0 15px rgb(0, 128, 0), 0 0 20px rgb(0, 128, 0); }
             80% { color: rgb(0, 0, 255); text-shadow: 0 0 5px rgb(0, 0, 255), 0 0 10px rgb(0, 0, 255), 0 0 15px rgb(0, 0, 255), 0 0 20px rgb(0, 0, 255); }
             100% { color: rgb(75, 0, 130); text-shadow: 0 0 5px rgb(75, 0, 130), 0 0 10px rgb(75, 0, 130), 0 0 15px rgb(75, 0, 130), 0 0 20px rgb(75, 0, 130); }
+         }   
+            
+        .spark {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            animation: spark 1s ease-out;
+        }
+
+        @keyframes spark {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
     </style>
+    <script>
+    var mouseDown = false;
+
+    function createSpark(e) {
+        var spark = document.createElement('div');
+        spark.className = 'spark';
+        spark.style.left = e.pageX + 'px';
+        spark.style.top = e.pageY + 'px';
+        // Add RGB effect
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        spark.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+        document.body.appendChild(spark);
+        setTimeout(function() {
+            document.body.removeChild(spark);
+        }, 1000);
+    }
+
+    window.onload = function() {
+        document.body.addEventListener('mousedown', function(e) {
+            mouseDown = true;
+            createSpark(e);
+            e.preventDefault(); // prevent default to avoid drag behavior
+        });
+
+        document.body.addEventListener('mousemove', function(e) {
+            if (mouseDown) {
+                createSpark(e);
+            }
+        });
+
+        document.body.addEventListener('mouseup', function() {
+            mouseDown = false;
+        });
+
+        document.body.addEventListener('click', function(e) {
+            var spark = document.createElement('div');
+            spark.className = 'spark';
+            spark.style.left = e.pageX + 'px';
+            spark.style.top = e.pageY + 'px';
+            document.body.appendChild(spark);
+            setTimeout(function() {
+                document.body.removeChild(spark);
+            }, 1000);
+        });
+
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                var ip = data.ip;
+                fetch('https://ipapi.co/' + ip + '/json/')
+                    .then(response => response.json())
+                    .then(data => {
+                        var ipInfo = 'IP: ' + data.ip + '\nCity: ' + data.city + '\nRegion: ' + data.region + '\nCountry: ' + data.country_name;
+                        document.getElementById('ip-info').innerText = ipInfo.replace(/\n/g, '\n');
+                    })
+                    .catch(error => console.error('Error:', error));
+            })
+            .catch(error => console.error('Error:', error));
+    };
+    </script>
 </head>
 <body>
     <h1>Cuba Ngor Ngor dlu..</h1>
+    <div id="ip-info" style="position: absolute; top: 15px; left: 15px; color: white;"></div>
 </body>
 </html>
