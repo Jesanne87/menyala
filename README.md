@@ -25,3 +25,8 @@ apt update && apt install -y bzip2 gzip coreutils screen curl && apt install bc 
 wget https://raw.githubusercontent.com/Jesanne87/menyala/main/addon/autoclear/autoclear.sh && chmod +x autoclear.sh && ./autoclear.sh
 
 ```
+## Autokick inject
+```
+wget https://raw.githubusercontent.com/Jesanne87/menyala/main/addon/autoclear/autokick.sh && chmod +x autokick.sh && ./autokick.sh
+
+```
