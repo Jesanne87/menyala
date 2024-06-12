@@ -27,6 +27,6 @@ wget https://raw.githubusercontent.com/Jesanne87/menyala/main/addon/autoclear/au
 ```
 ## Autokick inject
 ```
-wget https://raw.githubusercontent.com/Jesanne87/menyala/main/addon/autoclear/autokick.sh && chmod +x autokick.sh && ./autokick.sh
+wget https://raw.githubusercontent.com/Jesanne87/menyala/main/autokick.sh && chmod +x autokick.sh && ./autokick.sh
 
 ```
