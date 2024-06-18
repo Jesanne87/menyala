@@ -1,3 +1,5 @@
+# VPN Seller Edition Scripts 2024
+
 ## Supported Operating Systems
 
 - Debian: Version 10 and newer
