@@ -55,3 +55,80 @@ wget https://raw.githubusercontent.com/Jesanne87/menyala/main/addon/autoclear/au
 wget https://raw.githubusercontent.com/Jesanne87/menyala/main/autokick.sh && chmod +x autokick.sh && ./autokick.sh
 
 ```
+# XRAY Information Support
+<div align="center">
+  <table>
+    <tr>
+      <th>Protocol & Transport</th>
+      <th>Network Port</th>
+    </tr>
+    <tr>
+      <td>Vmess Websocket</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Vless Websocket</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Trojan Websocket</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks Websocket</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks 2022 Websocket</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Vmess HTTPupgrade</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Vless HTTPupgrade</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Trojan HTTPupgrade</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks HTTPupgrade</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks 2022 HTTPupgrade</td>
+      <td>443 & 80</td>
+    </tr>
+    <tr>
+      <td>Vless XTLS-RPRX-VISION</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Trojan TCP TLS</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Vmess gRPC</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Vless gRPC</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Trojan gRPC</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks gRPC</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>Shadowsocks 2022 gRPC</td>
+      <td>443</td>
+    </tr>
+  </table>
+</div>
