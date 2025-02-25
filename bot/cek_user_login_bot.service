@@ -3,7 +3,7 @@ Description=Telegram Bot Monitor and Check Service
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/cek_user_login_bot -c > /dev/null 2>&1
+ExecStart=/usr/local/bin/cek_user_login_bot
 Restart=always
 User=root
 Environment=BOT_TOKEN=YOUR_BOT_TOKEN
